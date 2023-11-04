@@ -1,9 +1,11 @@
 import React, { use, useEffect, useState } from "react";
+import { Flex, Input, Spin, Typography } from "antd";
+import axios from "axios";
 import TopLayout from "@/components/TopLayout";
 import EventDetector from "./eventdetector.page";
-import { Flex, Input, Spin } from "antd";
+import { useRouter } from "next/router";
+
 const { TextArea } = Input;
-import axios from "axios";
 
 function TextContainer({
   onChange,
@@ -12,22 +14,6 @@ function TextContainer({
   onChange: any;
   textState: string;
 }) {
-  // const [localText, setLocalText] = useState("Start editing me here!");
-
-  // useEffect(() => {
-  //   setLocalText(textState);
-  // }, [textState]);
-  // Inline CSS styles for the container
-  // const containerStyle = {
-  //   maxWidth: "600px", // ch units base the width on the width of the zero character, closely approximating the average character width for the font.
-  //   lineHeight: "1.6", // Optimal line height for readability
-  //   padding: "1rem", // Padding inside the container
-  //   margin: "auto", // Center the container
-  //   border: "1px solid #ddd", // Just to show the container's bounds, can be removed
-  //   borderRadius: "8px", // Optional border radius for aesthetics
-  //   minWidth: "600px",
-  // };
-
   return (
     <div className="min-w-full flex items-center justify-center">
       <TextArea
@@ -39,18 +25,6 @@ function TextContainer({
       />
     </div>
   );
-
-  // return (
-  //   <div
-  //     contentEditable
-  //     onInput={handleContentChange}
-  //     suppressContentEditableWarning={true}
-  //     className="editable mx-auto p-4 max-w-[60ch] border border-gray-300 rounded-lg leading-relaxed outline-none focus:ring-2 focus:ring-blue-500"
-  //     style={containerStyle}
-  //   >
-  //     {localText}
-  //   </div>
-  // );
 }
 
 function Index() {
@@ -58,13 +32,16 @@ function Index() {
   const [textState, setTextState] = useState("Start editing me here!!!");
   const [isSaving, setIsSaving] = useState(false);
 
+  const router = useRouter();
+  const { id: projectId } = router.query;
+
   const [updateTimer, setUpdateTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Fetch initial data
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await axios.get("/api/project");
+        const response = await axios.get(`/api/projects/${projectId}`);
         console.log(
           "%cindex.page.tsx line:57 response.data.events",
           "color: #007acc;",
@@ -97,7 +74,7 @@ function Index() {
       // Function to call the API and update the database
       const updateDatabase = async () => {
         try {
-          const response = await axios.post("/api/project", {
+          const response = await axios.post(`/api/projects/${projectId}`, {
             events: projectEvents,
             textState,
           });
@@ -110,7 +87,7 @@ function Index() {
 
       // Call the update function
       updateDatabase();
-    }, 5000); // Wait for 5 seconds
+    }, 2000); // Wait for 5 seconds
 
     // Save the timer so it can be cleared if projectEvents changes again
     setUpdateTimer(timer);

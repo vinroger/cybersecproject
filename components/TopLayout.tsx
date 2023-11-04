@@ -31,14 +31,14 @@ const TopLayout = ({ children }: { children: React.ReactNode }) => {
           selectedKeys={[router.pathname.split("/")[1]]}
           // activeKey={router.pathname.split("/")[1]}
         >
-          {/* <Menu.Item key="home" onClick={() => onNavigate("/home")}>
-            Home
-          </Menu.Item> */}
-          <Menu.Item key="editor" onClick={() => onNavigate("/editor")}>
-            Editor
+          <Menu.Item key="projects" onClick={() => onNavigate("/projects")}>
+            Projects
           </Menu.Item>
           <Menu.Item key="about" onClick={() => onNavigate("/about")}>
             About
+          </Menu.Item>
+          <Menu.Item key="playback" onClick={() => onNavigate("/playback")}>
+            Playback
           </Menu.Item>
         </Menu>
       </Header>
