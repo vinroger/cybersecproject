@@ -6,7 +6,7 @@ export default function Home(): JSX.Element {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/dashboard");
+    router.push("/editor");
   }, [router]);
 
   return (

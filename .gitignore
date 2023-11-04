@@ -37,3 +37,5 @@ next-env.d.ts
 .next/
 .next
 .next/*
+
+.env
