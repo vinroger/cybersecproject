@@ -1,7 +1,8 @@
+import TopLayout from "@/components/TopLayout";
 import React from "react";
 
 function About() {
-  return <div>about.page</div>;
+  return <TopLayout>about.page</TopLayout>;
 }
 
 export default About;
