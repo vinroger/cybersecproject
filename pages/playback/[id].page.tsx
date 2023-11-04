@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Flex, Input, Slider, Spin, Tooltip, Typography } from "antd";
+/* eslint-disable no-else-return */
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Flex, Input, Slider, Spin, Tooltip, Typography } from "antd";
 import axios from "axios";
 import { useRouter } from "next/router";
 import TopLayout from "@/components/TopLayout";
+import { PauseOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
 function TextContainer({ textState }: { textState: string }) {
   const containerStyle = {
@@ -23,15 +25,6 @@ function TextContainer({ textState }: { textState: string }) {
     </div>
   );
 }
-
-// const clickMarkerStyle = {
-//   position: "absolute",
-//   width: "10px",
-//   height: "10px",
-//   backgroundColor: "red",
-//   borderRadius: "50%",
-//   transform: "translate(-50%, -50%)", // Center the dot on the click position
-// };
 
 const clickMarkerStyle: React.CSSProperties = {
   position: "absolute",
@@ -57,6 +50,11 @@ function Index() {
 
   const [currentEvent, setCurrentEvent] = useState<string>("");
   const [mousePosition, setMousePosition] = useState<any>(null);
+
+  // For play and pause stuff
+  const [isPlaying, setIsPlaying] = useState(false);
+  const playbackIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
   // Fetch initial data
   useEffect(() => {
@@ -93,9 +91,101 @@ function Index() {
     }
   };
 
+  const play = () => {
+    if (currentEventIndex < projectEvents.length - 1 && !isPlaying) {
+      setIsPlaying(true);
+      playbackIntervalRef.current = setInterval(
+        () => {
+          setCurrentEventIndex((prevIndex) => {
+            const nextIndex = prevIndex + 1;
+            if (nextIndex < projectEvents.length) {
+              updateStateForEvent(nextIndex);
+              return nextIndex;
+            } else {
+              clearInterval(playbackIntervalRef.current as NodeJS.Timeout);
+              setIsPlaying(false);
+              return prevIndex;
+            }
+          });
+        },
+        calculateInterval(currentEventIndex) / playbackSpeed
+      );
+    }
+  };
+
+  const pause = () => {
+    if (playbackIntervalRef.current) {
+      clearInterval(playbackIntervalRef.current);
+      playbackIntervalRef.current = null;
+    }
+    setIsPlaying(false);
+  };
+
+  // New function to handle speed change
+  const changeSpeed = () => {
+    setPlaybackSpeed((prevSpeed) => {
+      // Cycle through 1x, 1.5x, and 2x speeds
+      const newSpeed = prevSpeed >= 2 ? 1 : prevSpeed + 0.5;
+      if (isPlaying) {
+        // Restart the interval with the new speed
+        clearInterval(playbackIntervalRef.current as NodeJS.Timeout);
+        playbackIntervalRef.current = setInterval(
+          () => {
+            setCurrentEventIndex((prevIndex) => {
+              const nextIndex = prevIndex + 1;
+              if (nextIndex < projectEvents.length) {
+                updateStateForEvent(nextIndex);
+                return nextIndex;
+              } else {
+                clearInterval(playbackIntervalRef.current as NodeJS.Timeout);
+                setIsPlaying(false);
+                return prevIndex;
+              }
+            });
+          },
+          calculateInterval(currentEventIndex) / newSpeed
+        );
+      }
+      return newSpeed;
+    });
+  };
+
+  const calculateInterval = (index: number) => {
+    if (index < projectEvents.length - 1) {
+      const currentEventTimestamp = new Date(
+        projectEvents[index].timestamp
+      ).getTime();
+      const nextEventTimestamp = new Date(
+        projectEvents[index + 1].timestamp
+      ).getTime();
+      return nextEventTimestamp - currentEventTimestamp;
+    }
+    return 1000; // Default to 1 second if no more events
+  };
+
+  const updateStateForEvent = (index: number) => {
+    const event = projectEvents[index];
+    if (event) {
+      setTextState(event.textState);
+      updateClickPosition(event);
+      setCurrentEvent(event.event);
+      setMousePosition(event.mousePosition);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (playbackIntervalRef.current) {
+        clearInterval(playbackIntervalRef.current);
+      }
+    };
+  }, []);
+
   return (
     <TopLayout>
       <TextContainer textState={textState} />
+
       {clickPosition && (
         <Tooltip
           title={`Click happened here, X: ${clickPosition.x}, Y: ${clickPosition.y}, at ${projectEvents[currentEventIndex]?.timestamp}`}
@@ -112,10 +202,21 @@ function Index() {
         </Tooltip>
       )}
       <div
-        className="bg-white absolute bottom-10 p-5"
+        className="bg-white absolute bottom-10 p-5 rounded-lg"
         style={{ width: "calc(100vw - 150px)" }}
       >
-        <Typography.Title level={3}>Navigator</Typography.Title>
+        <Typography.Title className="mt-0" level={3}>
+          Navigator
+        </Typography.Title>
+        <div className="controls">
+          <Button
+            onClick={isPlaying ? pause : play}
+            icon={isPlaying ? <PauseOutlined /> : <PlayCircleOutlined />}
+          >
+            {isPlaying ? "Pause" : "Play"}
+          </Button>
+          <Button onClick={changeSpeed}>{playbackSpeed}x</Button>
+        </div>
         <Slider
           className="mt-10 "
           min={0}
