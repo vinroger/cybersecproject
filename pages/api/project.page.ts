@@ -26,14 +26,15 @@ export default async function handler(
     try {
       // For simplicity, we're assuming the body of the request is the events array
       // In production, you'd want to validate this data
-      const { events } = req.body;
+      const { events, textState } = req.body;
       if (!events || !Array.isArray(events)) {
         return res.status(400).json({ message: "Invalid events array" });
       }
 
       const result = await collection.updateOne(
         { id: projectId },
-        { $set: { events } }
+        { $set: { events, textState } },
+        { upsert: true }
       );
 
       res.status(200).json(result);

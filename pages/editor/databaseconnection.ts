@@ -5,7 +5,6 @@ import axios from "axios";
 const getProjectData = async () => {
   try {
     const response = await axios.get("/api/project");
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("There was an error fetching the project data:", error);
@@ -17,7 +16,6 @@ const getProjectData = async () => {
 const updateProjectData = async (events: any[]) => {
   try {
     const response = await axios.post("/api/project", { events });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("There was an error updating the project data:", error);
