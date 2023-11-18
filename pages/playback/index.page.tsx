@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from "react";
-import { Card, Button, Modal, Input } from "antd";
-import { Router, useRouter } from "next/router";
-import { DeleteFilled, DeleteOutlined } from "@ant-design/icons";
+import { Card, Button, Modal, Input, Spin } from "antd";
+import { useRouter } from "next/router";
+import { DeleteFilled } from "@ant-design/icons";
 import TopLayout from "@/components/TopLayout";
 
 const ProjectPage = () => {
@@ -10,13 +10,19 @@ const ProjectPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newProjectTitle, setNewProjectTitle] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   // Fetch projects on component mount
   useEffect(() => {
+    setIsLoading(true);
     fetch("/api/projects")
       .then((response) => response.json())
-      .then((data) => setProjects(data))
+      .then((data) => {
+        setProjects(data);
+        setIsLoading(false);
+      })
       .catch((error) => console.error("Error fetching projects:", error));
   }, []);
 
@@ -26,7 +32,7 @@ const ProjectPage = () => {
   };
 
   // Handle input change for new project title
-  const handleTitleChange = (event) => {
+  const handleTitleChange = (event: any) => {
     setNewProjectTitle(event.target.value);
   };
 
@@ -57,12 +63,25 @@ const ProjectPage = () => {
           throw new Error("Network response was not ok");
         }
         // Remove the project from the local state to update UI
-        setProjects(projects.filter((project) => project._id !== projectId));
+        setProjects(
+          projects.filter((project: any) => project._id !== projectId)
+        );
       })
       .catch((error) => {
         console.error("Error deleting project:", error);
       });
   };
+
+  if (isLoading) {
+    return (
+      <TopLayout>
+        <div className="flex justify-center items-center h-screen">
+          <Spin className="mr-2" />
+          Loading ...
+        </div>
+      </TopLayout>
+    );
+  }
 
   return (
     <TopLayout>
@@ -74,7 +93,7 @@ const ProjectPage = () => {
           padding: "16px",
         }}
       >
-        {projects.map((project) => (
+        {projects.map((project: any) => (
           <Card
             className="cursor-pointer hover:border-blue-500 flex"
             bodyStyle={{ minWidth: "100%" }}

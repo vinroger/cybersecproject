@@ -31,6 +31,7 @@ function Index() {
   const [projectEvents, setProjectEvents] = useState<any>([]);
   const [textState, setTextState] = useState("Start editing me here!!!");
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const { id: projectId } = router.query;
@@ -39,6 +40,7 @@ function Index() {
 
   // Fetch initial data
   useEffect(() => {
+    setIsLoading(true);
     const fetchInitialData = async () => {
       try {
         const response = await axios.get(`/api/projects/${projectId}`);
@@ -49,13 +51,14 @@ function Index() {
         );
         setProjectEvents(response.data.events || []);
         setTextState(response.data.textState || "Start editing me here!!!");
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch initial data:", error);
       }
     };
 
     fetchInitialData();
-  }, []);
+  }, [projectId]);
 
   useEffect(() => {
     console.log(
@@ -98,7 +101,17 @@ function Index() {
         clearTimeout(timer);
       }
     };
-  }, [projectEvents]); // Only re-run the effect if projectEvents changes
+  }, [projectEvents, projectId, textState]); // Only re-run the effect if projectEvents changes
+
+  if (isLoading) {
+    return (
+      <TopLayout>
+        <div className="w-full h-full flex items-center justify-center">
+          <Spin />
+        </div>
+      </TopLayout>
+    );
+  }
 
   return (
     <TopLayout>

@@ -22,7 +22,8 @@ const EventDetector = ({
     event: string,
     type: string,
     textStateinput: string,
-    mousePositionInput: { x: number; y: number }
+    mousePositionInput: { x: number; y: number },
+    data: string
   ) => {
     setProjectEvents((prev: any) => [
       ...prev,
@@ -32,6 +33,7 @@ const EventDetector = ({
         timestamp: new Date().toISOString(),
         mousePosition: mousePositionInput,
         textState: textStateinput,
+        data,
       },
     ]);
   };
@@ -65,7 +67,7 @@ const EventDetector = ({
     // Determine the type of the event based on the keys pressed
     const type = keysPressed.length > 1 ? "keyboard-combination" : "keyboard";
 
-    eventCallback(info, type, textState, mousePosition);
+    eventCallback(info, type, textState, mousePosition, keysPressed.join("+"));
 
     // Prevent the default action to avoid interference with the normal behavior of the keys
     // event.preventDefault();
@@ -76,14 +78,20 @@ const EventDetector = ({
     const info = `Click (X:${event.clientX}, Y:${event.clientY})`;
     setEventInfo(info);
     setShowPopup(true);
-    eventCallback(info, "mouse", textState, mousePosition);
+    eventCallback(
+      info,
+      "mouse",
+      textState,
+      mousePosition,
+      `${event.clientX};${event.clientY}`
+    );
   };
 
   const handleMouseWheel = (event: any) => {
     const info = `Scroll: ${event.deltaY > 0 ? "Down" : "Up"}`;
     setEventInfo(info);
     setShowPopup(true);
-    eventCallback(info, "mouse", textState, mousePosition);
+    eventCallback(info, "mouse", textState, mousePosition, `${event.deltaY}`);
   };
 
   // Function to handle mouse move events

@@ -1,10 +1,10 @@
 /* eslint-disable no-else-return */
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Flex, Input, Slider, Spin, Tooltip, Typography } from "antd";
+import { Button, Slider, Spin, Tooltip, Typography } from "antd";
 import axios from "axios";
 import { useRouter } from "next/router";
-import TopLayout from "@/components/TopLayout";
 import { PauseOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import TopLayout from "@/components/TopLayout";
 
 function TextContainer({ textState }: { textState: string }) {
   const containerStyle = {
@@ -56,20 +56,24 @@ function Index() {
   const playbackIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // Fetch initial data
   useEffect(() => {
+    setIsLoading(true);
     const fetchInitialData = async () => {
       try {
         const response = await axios.get(`/api/projects/${projectId}`);
         setProjectEvents(response.data.events || []);
         setTextState(response.data.textState || "Start editing me here!!!");
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch initial data:", error);
       }
     };
 
     fetchInitialData();
-  }, []);
+  }, [projectId]);
 
   // Handler for when the slider changes
   const onSliderChange = (value: number) => {
@@ -182,6 +186,17 @@ function Index() {
     };
   }, []);
 
+  if (isLoading) {
+    return (
+      <TopLayout>
+        <div className="flex justify-center items-center h-screen">
+          <Spin className="mr-2" />
+          Loading ...
+        </div>
+      </TopLayout>
+    );
+  }
+
   return (
     <TopLayout>
       <TextContainer textState={textState} />
@@ -228,7 +243,8 @@ function Index() {
           //   }, {})}
           step={1}
           tooltip={{
-            formatter: (index) => projectEvents[index]?.timestamp,
+            formatter: (index) => projectEvents[index || 0]?.timestamp,
+            // @ts-expect-error idk
             draggableTrack: true,
           }}
         />
