@@ -164,52 +164,52 @@ const plagiarismMessages = [
   {
     range: [0, 10],
     message:
-      "High chance of AI-generated or copy-pasted content detected. The keystroke patterns and time intervals suggest significant likelihood of text being non-original, possibly sourced from AI tools like ChatGPT or copied from existing materials. Our AI recommends a thorough review, including checking against known sources and using the playback function to trace the text's origin.",
+      "High likelihood of plagiarism, potentially due to unusual keystroke patterns. This score may suggest extensive copy-paste actions or atypical typing behavior. Recommended actions: 1) Check the content for plagiarism against known sources. 2) Use the playback feature to examine text creation for suspicious activity.",
   },
   {
     range: [10, 20],
     message:
-      "Strong indications of AI or traditional plagiarism. The content bears substantial resemblance to existing texts or AI-generated patterns. Detailed examination against known sources is advised, alongside playback review to identify the exact nature of the plagiarism.",
+      "Strong signs of potentially non-original creation methods. The score may indicate frequent paste actions or irregular typing patterns, pointing towards possible content borrowing. Recommended actions: 1) Conduct a thorough content plagiarism check. 2) Review the text creation process with the playback feature for suspect sections.",
   },
   {
     range: [20, 30],
     message:
-      "Moderate to high probability of non-original content. Patterns suggest potential AI generation or copying from known texts. In-depth analysis and comparison with potential sources, augmented by playback of keystrokes, are recommended to assess originality.",
+      "Moderate to high possibility of plagiarism based on potential keystroke patterns. This score suggests some irregularities that could indicate copying or non-standard text creation. Recommended actions: 1) Analyze the content for possible plagiarism. 2) Examine keystroke playback to detect copied portions of text.",
   },
   {
     range: [30, 40],
     message:
-      "Moderate likelihood of plagiarism. Some text sections align with AI-generated content or existing sources, despite unique elements. Cross-checking with known materials and reviewing keystroke playback is recommended for verification.",
+      "Moderate plagiarism risk inferred from potential typing patterns. The score reflects certain inconsistencies that might suggest partial copying of content. Recommended actions: 1) Verify against known sources for content similarity. 2) Use playback functionality to observe text development.",
   },
   {
     range: [40, 50],
     message:
-      "Possible presence of AI-generated or copied content. Hints of non-original text are interspersed with original writing. Targeted investigation of suspect parts, including playback analysis, is suggested.",
+      "Possible unoriginal typing patterns detected, suggesting some degree of content copying. The balance between typical typing and suspect actions like frequent pasting points to potential plagiarism. Recommended actions: 1) Investigate content for unoriginality. 2) Analyze specific sections with the playback feature for further insight.",
   },
   {
     range: [50, 60],
     message:
-      "Ambiguous originality. The mix of unique and potentially non-original phrases raises questions. A cautious review, including playback of text entry and comparison with known sources, is recommended.",
+      "Uncertain originality based on potential typing patterns. A mix of regular typing and potential copy-paste actions creates ambiguity. Recommended actions: 1) Conduct a careful review of the content for plagiarism. 2) Utilize the playback feature to scrutinize the text creation process.",
   },
   {
     range: [60, 70],
     message:
-      "Likely original with some commonalities. The text mostly appears self-generated but includes some typical phrases or patterns seen in AI-generated content. Minor checks using source comparison and playback tracing are suggested.",
+      "Likely original with some unusual patterns potentially present. The majority of typing seems standard, but sporadic actions might raise mild concerns. Recommended actions: 1) Perform a basic plagiarism check. 2) Review text creation using playback for any unusual activity.",
   },
   {
     range: [70, 80],
     message:
-      "Predominantly original content. While largely unique, there are some elements resembling AI-generated text or common sources. Brief review using playback functionality is advised for assurance.",
+      "Mostly standard typing behavior with minor irregularities potentially present. The text is likely original, though some keystroke patterns may warrant a second look. Recommended actions: 1) Briefly check content for plagiarism. 2) Use the playback feature to confirm the originality of suspicious parts.",
   },
   {
     range: [80, 90],
     message:
-      "Highly original content with minimal similarities. The text shows signs of originality, with only slight resemblances to AI patterns or existing sources. Minimal verification, including a routine playback check, is recommended.",
+      "High likelihood of originality based on keystroke analysis. Occasional anomalies in the data might not significantly affect the overall normal typing pattern. Recommended actions: 1) Minimal content verification may be performed. 2) Playback review is optional but can offer additional confidence.",
   },
   {
     range: [90, 100],
     message:
-      "Excellent originality. The content largely exhibits characteristics of being self-written and unique. While no immediate concerns are raised, routine verification, including playback analysis, can be performed for compliance.",
+      "Excellent indication of originality from keystroke behavior. The patterns largely align with standard text creation, suggesting minimal plagiarism risk. Recommended actions: 1) Routine plagiarism checks can be conducted for assurance. 2) Optional playback review for compliance and further confirmation.",
   },
 ];
 
