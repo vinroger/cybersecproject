@@ -11,7 +11,9 @@ export default function Home(): JSX.Element {
 
   return (
     <TopLayout>
-      <div className="font-bold">Welcome to Startup!</div>
+      <div className="font-bold">
+        Welcome to Project AlphaDetect - LLM Detection!
+      </div>
     </TopLayout>
   );
 }

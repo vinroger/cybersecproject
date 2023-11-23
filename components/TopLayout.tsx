@@ -34,11 +34,12 @@ const TopLayout = ({ children }: { children: React.ReactNode }) => {
           <Menu.Item key="projects" onClick={() => onNavigate("/projects")}>
             Projects
           </Menu.Item>
+
+          <Menu.Item key="analysis" onClick={() => onNavigate("/analysis")}>
+            Analysis
+          </Menu.Item>
           <Menu.Item key="about" onClick={() => onNavigate("/about")}>
             About
-          </Menu.Item>
-          <Menu.Item key="playback" onClick={() => onNavigate("/playback")}>
-            Playback
           </Menu.Item>
         </Menu>
       </Header>

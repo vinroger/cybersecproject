@@ -100,7 +100,7 @@ const ProjectPage = () => {
             key={project._id}
             style={{ width: 300 }}
             onClick={() => {
-              router.push(`/playback/${project._id}`);
+              router.push(`/analysis/${project._id}`);
             }}
           >
             <div className="flex flex-row justify-between min-w-full">
