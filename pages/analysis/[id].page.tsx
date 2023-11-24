@@ -1,5 +1,3 @@
-/* eslint-disable no-promise-executor-return */
-/* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-properties */
 /* eslint-disable prefer-exponentiation-operator */
@@ -281,42 +279,19 @@ function Index() {
     if (!projectId) {
       return;
     }
-
     const fetchAIData = async () => {
+      console.log("%c[id].page.tsx line:27 test", "color: #007acc;");
       try {
-        // Initial attempt to fetch data
-        let response = await axios.get(`/api/analysis/${projectId}`);
-
-        if (!response.data || !response.data.cheat_detection_score) {
-          // If data is not available, trigger backend analysis update
-          await axios.post(`/api/analysis/${projectId}`);
-
-          // Polling MongoDB for updated data
-          let attempts = 0;
-          const maxAttempts = 10;
-          while (
-            !response.data?.cheat_detection_score &&
-            attempts < maxAttempts
-          ) {
-            attempts++;
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay between polls
-            response = await axios.get(`/api/analysis/${projectId}`);
-          }
-
-          if (attempts >= maxAttempts) {
-            throw new Error("Max attempts reached, analysis data not found");
-          }
-        }
-
-        // Successfully retrieved data
-        setAIScore(100 - Number(response.data.cheat_detection_score));
+        setAIScoreStatus("LOADING");
+        const response = await axios.post(`/api/analysis/${projectId}`);
+        const response2 = await axios.get(`/api/analysis/${projectId}`);
+        setAIScore(100 - Number(response2.data.cheat_detection_score));
         setAIScoreStatus("LOADED");
       } catch (error) {
         setAIScoreStatus("ERROR");
-        console.error("Failed to fetch AI data:", error);
+        console.error("Failed to fetch initial data:", error);
       }
     };
-
     fetchAIData();
   }, [projectId]);
 
@@ -576,8 +551,7 @@ function Index() {
           ) : AIScoreStatus === "LOADED" ? (
             <>
               <div className="mt-3 mb-2">
-                AI Plagiarism Detection Score:{" "}
-                <strong>{AIScore.toFixed(3)} %</strong>
+                AI Plagiarism Detection Score: <strong>{AIScore} %</strong>
                 <Tooltip
                   className="text-gray-300 cursor-pointer"
                   title="This score indicates the likelihood of the text being original. A higher score (closer to 100%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 0% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
