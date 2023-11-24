@@ -551,7 +551,8 @@ function Index() {
           ) : AIScoreStatus === "LOADED" ? (
             <>
               <div className="mt-3 mb-2">
-                AI Plagiarism Detection Score: <strong>{AIScore} %</strong>
+                AI Plagiarism Detection Score:{" "}
+                <strong>{AIScore.toFixed(2)} %</strong>
                 <Tooltip
                   className="text-gray-300 cursor-pointer"
                   title="This score indicates the likelihood of the text being original. A higher score (closer to 100%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 0% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
