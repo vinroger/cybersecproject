@@ -1,3 +1,6 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-properties */
 /* eslint-disable prefer-exponentiation-operator */
 /* eslint-disable no-plusplus */
@@ -213,7 +216,7 @@ const plagiarismMessages = [
   },
 ];
 
-const AIscore = (Math.random() * 100).toFixed(2);
+// const AIscore = (Math.random() * 100).toFixed(2);
 
 function getPlagiarismMessage(score: any) {
   const found = plagiarismMessages.find(
@@ -251,17 +254,18 @@ function Index() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [AIScoreStatus, setAIScoreStatus] = useState("LOADING");
+  const [AIScore, setAIScore] = useState(0);
+
   // Fetch initial data
   useEffect(() => {
+    if (!projectId) {
+      return;
+    }
     setIsLoading(true);
     const fetchInitialData = async () => {
       try {
         const response = await axios.get(`/api/projects/${projectId}`);
-        console.log(
-          "%c[id].page.tsx line:67 response.data",
-          "color: #007acc;",
-          response.data
-        );
         setProjectEvents(response.data.events || []);
         setTextState(response.data.textState || "Start editing me here!!!");
         setIsLoading(false);
@@ -271,6 +275,49 @@ function Index() {
     };
 
     fetchInitialData();
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!projectId) {
+      return;
+    }
+
+    const fetchAIData = async () => {
+      try {
+        // Initial attempt to fetch data
+        let response = await axios.get(`/api/analysis/${projectId}`);
+
+        if (!response.data || !response.data.cheat_detection_score) {
+          // If data is not available, trigger backend analysis update
+          await axios.post(`/api/analysis/${projectId}`);
+
+          // Polling MongoDB for updated data
+          let attempts = 0;
+          const maxAttempts = 10;
+          while (
+            !response.data?.cheat_detection_score &&
+            attempts < maxAttempts
+          ) {
+            attempts++;
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay between polls
+            response = await axios.get(`/api/analysis/${projectId}`);
+          }
+
+          if (attempts >= maxAttempts) {
+            throw new Error("Max attempts reached, analysis data not found");
+          }
+        }
+
+        // Successfully retrieved data
+        setAIScore(response.data.cheat_detection_score);
+        setAIScoreStatus("LOADED");
+      } catch (error) {
+        setAIScoreStatus("ERROR");
+        console.error("Failed to fetch AI data:", error);
+      }
+    };
+
+    fetchAIData();
   }, [projectId]);
 
   // Handler for when the slider changes
@@ -524,16 +571,24 @@ function Index() {
             </div>
           </div>
           <div className="mt-4 text-lg font-semibold">Prediction</div>
-          <div className="mt-3 mb-2">
-            AI Plagiarism Detection Score: <strong>{AIscore} %</strong>
-            <Tooltip
-              className="text-gray-300 cursor-pointer"
-              title="This score indicates the likelihood of the text being original. A higher score (closer to 100%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 0% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
-            >
-              <InfoCircleOutlined className="ml-2" />
-            </Tooltip>
-          </div>
-          <div>{getPlagiarismMessage(AIscore)}</div>
+          {AIScoreStatus === "LOADING" ? (
+            <div className="mt-3 mb-2">Loading...</div>
+          ) : AIScoreStatus === "LOADED" ? (
+            <>
+              <div className="mt-3 mb-2">
+                AI Plagiarism Detection Score: <strong>{AIScore} %</strong>
+                <Tooltip
+                  className="text-gray-300 cursor-pointer"
+                  title="This score indicates the likelihood of the text being original. A higher score (closer to 100%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 0% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
+                >
+                  <InfoCircleOutlined className="ml-2" />
+                </Tooltip>
+              </div>
+              <div>{getPlagiarismMessage(AIScore)}</div>
+            </>
+          ) : (
+            <div className="mt-3 mb-2">Error</div>
+          )}
         </div>
       )}
     </TopLayout>

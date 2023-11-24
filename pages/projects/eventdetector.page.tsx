@@ -102,7 +102,7 @@ const EventDetector = ({
   };
 
   useEffect(() => {
-    // Adding event listeners when component mounts
+    // Adding event listeners when page renders
     window.addEventListener("keydown", handleKeyPress);
     window.addEventListener("click", handleMouseClick);
     window.addEventListener("wheel", handleMouseWheel);

@@ -1,0 +1,31 @@
+{
+    "event": "Click (X:795, Y:117)",
+    "type": "mouse",
+    "timestamp": "2023-11-21T23:37:01.356Z",
+    "mousePosition": {
+        "x": 795,
+        "y": 117
+    },
+    "textState": "Start editing me here!!!",
+    "data": "795;117"
+},{
+    "event": "Key: Cmd + META",
+    "type": "keyboard-combination",
+    "timestamp": "2023-11-21T23:37:04.664Z",
+    "mousePosition": {
+        "x": 780,
+        "y": 126
+    },
+    "textState": "Start editing me here!!!",
+    "data": "Cmd+META"
+},{
+    "event": "Key: Cmd + A",
+    "type": "keyboard-combination",
+    "timestamp": "2023-11-21T23:37:04.816Z",
+    "mousePosition": {
+        "x": 780,
+        "y": 126
+    },
+    "textState": "Start editing me here!!!",
+    "data": "Cmd+A"
+}]
