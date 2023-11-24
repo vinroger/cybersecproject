@@ -309,7 +309,7 @@ function Index() {
         }
 
         // Successfully retrieved data
-        setAIScore(response.data.cheat_detection_score);
+        setAIScore(100 - Number(response.data.cheat_detection_score));
         setAIScoreStatus("LOADED");
       } catch (error) {
         setAIScoreStatus("ERROR");
