@@ -285,7 +285,7 @@ function Index() {
         setAIScoreStatus("LOADING");
         const response = await axios.post(`/api/analysis/${projectId}`);
         const response2 = await axios.get(`/api/analysis/${projectId}`);
-        setAIScore(100 - Number(response2.data.cheat_detection_score));
+        setAIScore(Number(response2.data.cheat_detection_score));
         setAIScoreStatus("LOADED");
       } catch (error) {
         setAIScoreStatus("ERROR");
@@ -555,12 +555,12 @@ function Index() {
                 <strong>{AIScore.toFixed(2)} %</strong>
                 <Tooltip
                   className="text-gray-300 cursor-pointer"
-                  title="This score indicates the likelihood of the text being original. A higher score (closer to 100%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 0% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
+                  title="This score indicates the likelihood of the text being original. A lower score (closer to 0%) suggests a higher probability of originality, implying that the text is less likely to be plagiarized. Scores closer to 100% indicate a higher likelihood of plagiarism. This metric is useful for initial screening but should be supplemented with further review for accurate determination."
                 >
                   <InfoCircleOutlined className="ml-2" />
                 </Tooltip>
               </div>
-              <div>{getPlagiarismMessage(AIScore)}</div>
+              <div>{getPlagiarismMessage(100 - AIScore)}</div>
             </>
           ) : (
             <div className="mt-3 mb-2">Error</div>
